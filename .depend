@@ -1,0 +1,30 @@
+Bintree.vo: Bintree.v
+Bintree.vi: Bintree.v
+Dummy_algebra.vo: Dummy_algebra.v Bintree.vo Env.vo
+Dummy_algebra.vi: Dummy_algebra.v Bintree.vo Env.vo
+Env.vo: Env.v Bintree.vo
+Env.vi: Env.v Bintree.vo
+Example.vo: Example.v Main.vo
+Example.vi: Example.v Main.vo
+Form.vo: Form.v Bintree.vo Env.vo Free_algebra.vo
+Form.vi: Form.v Bintree.vo Env.vo Free_algebra.vo
+Free_algebra.vo: Free_algebra.v Bintree.vo Env.vo
+Free_algebra.vi: Free_algebra.v Bintree.vo Env.vo
+Main.vo: Main.v Bintree.vo Env.vo Free_algebra.vo Form.vo Sequent.vo Proof.vo
+Main.vi: Main.v Bintree.vo Env.vo Free_algebra.vo Form.vo Sequent.vo Proof.vo
+Proof.vo: Proof.v Bintree.vo Env.vo Free_algebra.vo Form.vo Sequent.vo
+Proof.vi: Proof.v Bintree.vo Env.vo Free_algebra.vo Form.vo Sequent.vo
+Sequent.vo: Sequent.v Bintree.vo Env.vo Free_algebra.vo Form.vo
+Sequent.vi: Sequent.v Bintree.vo Env.vo Free_algebra.vo Form.vo
+Term_algebra.vo: Term_algebra.v Bintree.vo Env.vo
+Term_algebra.vi: Term_algebra.v Bintree.vo Env.vo
+Bintree.html: Bintree.v
+Dummy_algebra.html: Dummy_algebra.v Bintree.html Env.html
+Env.html: Env.v Bintree.html
+Example.html: Example.v Main.html
+Form.html: Form.v Bintree.html Env.html Free_algebra.html
+Free_algebra.html: Free_algebra.v Bintree.html Env.html
+Main.html: Main.v Bintree.html Env.html Free_algebra.html Form.html Sequent.html Proof.html
+Proof.html: Proof.v Bintree.html Env.html Free_algebra.html Form.html Sequent.html
+Sequent.html: Sequent.v Bintree.html Env.html Free_algebra.html Form.html
+Term_algebra.html: Term_algebra.v Bintree.html Env.html
