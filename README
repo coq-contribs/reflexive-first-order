@@ -1,0 +1,23 @@
+
+
+This package should contain the following files :
+
+README  : this file
+LGPL    : a copy of the GNU library general public license
+.depend : a dependency file used by the Makefile
+howto-cime : A quick help to use the present library with cime traces
+Makefile 
+
+Bintree.v : Definition of binary trees and generic lemmata about lists
+Env.v : Definition of domain encoding and dependant pairs used in
+  environments, and of the Instanceof relation.
+Term_algebra.v : Signature for terme algebras.
+Free_algebra.v : Instance of Term_algebra.Algebra, basic terms.
+Dummy_algebra.v: Instance of Term_algebra.Algebra, no terms (for propositional
+  logic).
+Form.v : Definition and properties of formulae.
+Sequent.v : Definitions and properties of sequents, meta theorems.
+Proof.v : Definition of proof traces and reflexion principle.
+Main.v : Wrapper.
+Example.v : example file
+
