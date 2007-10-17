@@ -671,7 +671,7 @@ Qed.
 
 Lemma Tmap_Tadd: forall i a T,
 Tmap (Tadd i a T) = Tadd i (f a) (Tmap T).
-fix 1;intros [ii|ii|] a [|T1 T2|b T1 T2];try congruence;simpl;
+fix 1;intros [ii|ii|] a [|T1 T2|b T1 T2];try congruence 0;simpl;
 (apply f_equal with (Tree B) || simpl;apply f_equal2 with (Tree B)(Tree B)|| idtac);auto;
 change (Tmap (Tadd ii a Tempty) = Tadd ii (f a) (Tmap Tempty));auto.
 Qed.
