@@ -1,0 +1,11 @@
+-R . ReflexiveFirstOrder
+./Main.v
+./Example.v
+./Sequent.v
+./Bintree.v
+./Term_algebra.v
+./Free_algebra.v
+./Form.v
+./Dummy_algebra.v
+./Env.v
+./Proof.v
