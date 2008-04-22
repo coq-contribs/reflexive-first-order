@@ -15,4 +15,4 @@ License: LGPL
 Keywords: computationnal reflection, interpretation, first-order logic,
   equational reasoning
 Require: 
-  
+  Category: Miscellaneous/Coq Extensions
