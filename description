@@ -10,9 +10,9 @@ Description:
   This contribution is a package which can be used to interpret firstorder
   proofs provided by an external theorem prover, using computationnal
   reflexion.   
-Url: 
+URL: 
 License: LGPL
 Keywords: computationnal reflection, interpretation, first-order logic,
   equational reasoning
 Require: 
-  Category: Miscellaneous/Coq Extensions
+Category: Miscellaneous/Coq Extensions
