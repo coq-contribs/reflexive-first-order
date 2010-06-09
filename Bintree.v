@@ -113,8 +113,8 @@ Theorem refl_pos_eq : forall m, pos_eq m m = true.
 induction m;simpl;auto.
 Qed.
 
-Definition pos_eq_dec (m n:positive) :{m=n}+{m<>n} .
-fix 1;intros [mm|mm|] [nn|nn|];try (right;congruence).
+Fixpoint pos_eq_dec (m n:positive) :{m=n}+{m<>n} .
+destruct m as [mm|mm|], n as [nn|nn|];try (right;congruence).
 case (pos_eq_dec mm nn).
 intro e;left;apply (f_equal xI e).
 intro ne;right;congruence.
