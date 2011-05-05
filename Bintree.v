@@ -23,22 +23,22 @@ Require Export BinPos.
 
 Open Scope positive_scope.
 
+Infix "?=" := Pcompare : positive_scope. (* For compatibility *)
+
 Ltac clean := try (simpl; congruence). 
 Ltac caseq t := generalize (refl_equal t); pattern t at -1; case t.
 
-Functional Scheme Pcompare_ind := Induction for Pcompare Sort Prop.
-
-
 Lemma Gt_Eq_Gt : forall p q cmp,
        (p ?= q) Eq = Gt -> (p ?= q) cmp = Gt.
-apply (Pcompare_ind (fun p q cmp _ => (p ?= q) Eq = Gt -> (p ?= q) cmp = Gt));
-simpl;auto;congruence.
+intros.
+rewrite Pos.compare_cont_spec. unfold Pos.compare. now rewrite H.
 Qed.
 
 Lemma Gt_Lt_Gt : forall p q cmp,
        (p ?= q) Lt = Gt -> (p ?= q) cmp = Gt.
-apply (Pcompare_ind (fun p q cmp _ => (p ?= q) Lt = Gt -> (p ?= q) cmp = Gt));
-simpl;auto;congruence.
+intros.
+apply Pos.compare_cont_Lt_Gt in H.
+rewrite Pos.compare_cont_spec. now rewrite H.
 Qed.
 
 Lemma Gt_Psucc_Eq: forall p q,
@@ -50,12 +50,9 @@ Qed.
 
 Lemma Eq_Psucc_Gt: forall p q,
   (p ?= Psucc q) Eq = Eq -> (p ?= q) Eq = Gt.
-intros p q;generalize p;clear p;induction q;destruct p;simpl;auto;try congruence.
-intro H;elim (Pcompare_not_Eq p (Psucc q));tauto.
-intro H;apply Gt_Eq_Gt;auto.
-intro H;rewrite Pcompare_Eq_eq with p q;auto.
-generalize q;clear q IHq p H;induction q;simpl;auto.
-intro H;elim (Pcompare_not_Eq p q);tauto.
+intros.
+apply Pos.compare_eq in H. subst.
+apply Pos.lt_gt, Pos.lt_succ_diag_r.
 Qed.
 
 Lemma Gt_Psucc_Gt : forall n p cmp cmp0,
