@@ -17,6 +17,7 @@
 (* $Id$ *)
 
 Unset Boxed Definitions.
+Global Set Asymmetric Patterns.
 
 Require Export List.
 Require Export BinPos.
