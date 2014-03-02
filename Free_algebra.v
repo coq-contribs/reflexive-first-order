@@ -525,7 +525,7 @@ intros var en;simpl.
 assert (FF:=Instanceof_Full _ _ _ _ Inst).
 rewrite get_push_Full;trivial.
 rewrite en.
-caseq (Pcompare n (index Venv) Eq);intro PCn.
+caseq (n ?= index Venv);intro PCn.
 rewrite (Pcompare_Eq_eq _ _ PCn) in en.
 rewrite get_Full_Eq in en;trivial;congruence.
 reflexivity.
@@ -687,7 +687,7 @@ reflexivity.
 assert (FF:=Instanceof_Full _ _ _ _ Inst).
 elim (get_Instanceof _ _ _ _ _ Inst _ H);trivial.
 rewrite get_push_Full;trivial.
-caseq (Pcompare i (index Venv) Eq).
+caseq (i ?= index Venv).
 intro e;rewrite (Pcompare_Eq_eq _ _ e) in H.
 rewrite <- (index_Instanceof _  hyps F Venv) in H;trivial.
 rewrite get_Full_Eq in H;trivial;try congruence.

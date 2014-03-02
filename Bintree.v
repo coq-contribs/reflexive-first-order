@@ -24,73 +24,18 @@ Require Export BinPos.
 
 Open Scope positive_scope.
 
-Notation "a ?= b" := (fun x => Pcompare a b x) (at level 70) : positive_scope. (* For compatibility *)
-
 Ltac clean := try (simpl; congruence). 
 Ltac caseq t := generalize (refl_equal t); pattern t at -1; case t.
 
-Lemma Gt_Eq_Gt : forall p q cmp,
-       (p ?= q) Eq = Gt -> (p ?= q) cmp = Gt.
-intros.
-cbn; rewrite Pos.compare_cont_spec. unfold Pos.compare. now rewrite H.
-Qed.
-
-Lemma Gt_Lt_Gt : forall p q cmp,
-       (p ?= q) Lt = Gt -> (p ?= q) cmp = Gt.
-intros.
-cbn in *; apply Pos.compare_cont_Lt_Gt in H.
-rewrite Pos.compare_cont_spec. now rewrite H.
-Qed.
-
-Lemma Gt_Psucc_Eq: forall p q,
-  (p ?= Psucc q) Gt = Gt -> (p ?= q) Eq = Gt.
-intros p q;generalize p;clear p;induction q;destruct p;simpl;auto;try congruence.
-intro;apply Gt_Eq_Gt;auto.
-apply Gt_Lt_Gt.
-Qed.
-
-Lemma Eq_Psucc_Gt: forall p q,
-  (p ?= Psucc q) Eq = Eq -> (p ?= q) Eq = Gt.
-intros.
-cbn in H; apply Pos.compare_eq in H. subst.
-apply Pos.lt_gt, Pos.lt_succ_diag_r.
-Qed.
-
-Lemma Gt_Psucc_Gt : forall n p cmp cmp0,
- (n?=p) cmp = Gt -> (Psucc n?=p) cmp0 = Gt.
-induction n;intros [ | p | p];simpl;try congruence.
-intros; apply IHn with cmp;trivial.
-intros; apply IHn with Gt;trivial.
-intros;apply Gt_Lt_Gt;trivial.
-intros [ | | ] _ H.
-apply Gt_Eq_Gt;trivial.
-apply Gt_Lt_Gt;trivial.
-trivial.
-Qed.
-
 Lemma Gt_Psucc: forall p q,
-       (p ?= Psucc q) Eq = Gt -> (p ?= q) Eq = Gt.
-intros p q;generalize p;clear p;induction q;destruct p;simpl;auto;try congruence.
-apply Gt_Psucc_Eq.
-intro;apply Gt_Eq_Gt;apply IHq;auto.
-apply Gt_Eq_Gt.
-apply Gt_Lt_Gt.
+       (p ?= Psucc q) = Gt -> (p ?= q) = Gt.
+intros p q H. apply Pos.lt_gt, Pos.le_succ_l.
+red. now rewrite Pos.compare_antisym, H.
 Qed.
 
 Lemma Psucc_Gt : forall p,
-       (Psucc p ?= p) Eq = Gt.
-induction p;simpl.
-apply Gt_Eq_Gt;auto.
-generalize p;clear p IHp.
-induction p;simpl;auto.
-reflexivity.
-Qed.
-
-Lemma Pcompare_Gt_Lt_rev: forall p q,
-(p ?= q) Eq = Gt -> (q ?= p) Eq = Lt .
-intros p q H; change ((q ?= p) (CompOpp Eq) = Lt).
-cbv beta; rewrite <- (Pcompare_antisym p q Eq).
-rewrite H;reflexivity.
+       (Psucc p ?= p) = Gt.
+intros. now apply Pos.lt_gt, Pos.lt_succ_diag_r.
 Qed.
 
 Fixpoint pos_eq (m n:positive) {struct m} :bool :=
@@ -355,13 +300,13 @@ Qed.
 
 Theorem Tget_Tadd: forall i j a T,
        Tget i (Tadd j a T) =
-       match (i ?= j) Eq with
+       match (i ?= j) with
          Eq => PSome a
        | Lt => Tget i T
        | Gt => Tget i T
        end.
-intros i j. cbn.
-caseq (Pcompare i j Eq).
+intros i j.
+case_eq (i ?= j); unfold Pos.compare.
 intro H;rewrite (Pcompare_Eq_eq _ _ H);intros a;clear i H.
 induction j;destruct T;simpl;try (apply IHj);congruence.
 generalize i;clear i;induction j;destruct T;simpl in H|-*;
@@ -389,7 +334,7 @@ Inductive Full : Store -> Type:=
   | F_push : forall a S, Full S -> Full (push a S).
 
 Theorem get_Full_Gt : forall S, Full S ->
-       forall i, (i ?= index S) Eq = Gt -> get i S = PNone.
+       forall i, (i ?= index S) = Gt -> get i S = PNone.
 intros S W;induction W.
 unfold empty,index,get,contents;intros;apply Tget_Tempty.
 unfold index,get,push;simpl contents.
@@ -416,13 +361,13 @@ Qed.
 Theorem get_push_Full : 
   forall i a S, Full S -> 
   get i (push a S) =
-  match (i ?= index S) Eq with
+  match (i ?= index S) with
     Eq => PSome a
   | Lt => get i S
   | Gt => PNone
 end.
-intros i a S F. cbn.
-caseq (Pcompare i (index S) Eq).
+intros i a S F.
+caseq (i ?= index S).
 intro e;rewrite (Pcompare_Eq_eq _ _ e).
 destruct S;unfold get,push,index;simpl contents;rewrite Tget_Tadd.
 rewrite Pcompare_refl;reflexivity.
@@ -438,8 +383,8 @@ Qed.
 Lemma Full_push_compat : forall i a S, Full S ->
 forall x, get i S = PSome x -> 
  get i (push a S) = PSome x.
-intros i a S F x H. cbv beta.
-caseq (Pcompare i (index S) Eq);intro test.
+intros i a S F x H. 
+caseq (i ?= index S);intro test.
 rewrite (Pcompare_Eq_eq _ _ test) in H.
 rewrite (get_Full_Eq _ F) in H;congruence.
 rewrite <- H.
@@ -487,7 +432,7 @@ get i S = PSome x -> In x S F.
 induction F.
 intro i;rewrite get_empty; congruence.
 intro i;rewrite get_push_Full;trivial.
-caseq (Pcompare i (index S) Eq);simpl.
+caseq (i ?= index S);simpl.
 left;congruence.
 right;eauto.
 congruence.
@@ -563,7 +508,7 @@ induction l.
 simpl.
 intros p a a' S F;subst.
 rewrite get_push_Full;auto.
-caseq (Pcompare p (index S) Eq);clean.
+caseq (p ?= index S);clean.
 caseq (a_eq a a');clean.
 intros ea e ep;
 generalize (a_eq_refl _ _ ea) (Psucc_inj _ _ (pos_eq_refl _ _ ep)). 
@@ -575,7 +520,7 @@ generalize (Psucc_inj _ _ (pos_eq_refl _ _ ep)).
 intro;subst;rewrite Pcompare_refl in e;congruence.
 simpl;intros p b b' S F.
 rewrite (get_push_Full p b' S F).
-caseq (Pcompare p (index S) Eq);clean.
+caseq (p ?= index S);clean.
 
 intro e;assert  (ee:=Pcompare_Eq_eq _ _ e);subst. 
 case (a_eq a b');clean.

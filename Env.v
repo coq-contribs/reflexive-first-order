@@ -60,7 +60,7 @@ induction Inst;intro dom0.
 unfold get;case n;simpl;congruence.
 repeat rewrite get_push_Full;trivial.
 rewrite (index_Instanceof hyps F Venv);trivial.
-caseq (Pcompare n (index Venv) Eq).
+caseq (n ?= index Venv).
 intros en edom;
 replace dom0 with dom;(try exists var);congruence.
 auto.
