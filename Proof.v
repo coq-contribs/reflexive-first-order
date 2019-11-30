@@ -5,8 +5,6 @@ Require Import Free_algebra.
 Require Import Form.
 Require Import Sequent.
 
-Unset Boxed Definitions.
-
 Section With_env.
 
 Variable Denv: domain_env.

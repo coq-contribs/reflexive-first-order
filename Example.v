@@ -19,9 +19,9 @@
 Require Import Main.
 
 Module Parity.
-Variable N:Set.
-Variable S:N -> N .
-Variables even odd: N -> Prop.
+Local Parameter N:Set.
+Local Parameter S:N -> N .
+Local Parameters even odd: N -> Prop.
 
 Goal 
 (forall x, even x -> odd (S x)) ->
@@ -50,7 +50,7 @@ End Parity.
 
 Module Equality.
 
-Variable S:Set.
+Local Parameter S:Set.
 
 Goal 
 forall x y : S , x = y -> y = x.
@@ -90,13 +90,13 @@ End Equality.
 
 Module Group_theory.
 
-Variable G :Set.
-Variable op: G -> G -> G.
-Variable e :G.
+Local Parameter G :Set.
+Local Parameter op: G -> G -> G.
+Local Parameter e :G.
 
-Hypothesis assoc: forall x y z, op (op x y) z= op x (op y z).
-Hypothesis neutral: forall x, op e x = x.
-Hypothesis inverse: forall x,exists y, op y x = e.  
+Local Axiom assoc: forall x y z, op (op x y) z= op x (op y z).
+Local Axiom neutral: forall x, op e x = x.
+Local Axiom inverse: forall x,exists y, op y x = e.  
 
 Goal forall x y, op x y = e -> op y x = e.
 

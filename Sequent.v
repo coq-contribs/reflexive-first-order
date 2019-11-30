@@ -4,8 +4,6 @@ Require Import Env.
 Require Import Free_algebra.
 Require Import Form.
 
-Unset Boxed Definitions.
-
 Section with_env.
 
 Variable Denv : domain_env.
@@ -252,7 +250,7 @@ intros f [H | H] W;subst;inversion W.
 trivial.
 apply IHF;trivial.
 change 
-(let (x,P) := existS (fun S: Store form => Full S) S F1 in
+(let (x,P) := existT (fun S: Store form => Full S) S F1 in
              WF_hyp_ctx V x P) in H8.
 rewrite H7 in H8.
 assumption.
@@ -278,7 +276,7 @@ subst;unfold interp_seq;simpl interp_hyps.
 apply (Compose0 V F S Fh) ;auto.
 inversion W.
 change 
-(let (x,P) := existS (fun S : Store form => Full S) S F1 in
+(let (x,P) := existT (fun S : Store form => Full S) S F1 in
              WF_hyp_ctx V x P) in H8.
 rewrite H7 in H8. 
 simpl in H8.

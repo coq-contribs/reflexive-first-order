@@ -16,7 +16,6 @@
 
 (* $Id$ *)
 
-Unset Boxed Definitions.
 Global Set Asymmetric Patterns.
 
 Require Export List.
@@ -28,13 +27,13 @@ Ltac clean := try (simpl; congruence).
 Ltac caseq t := generalize (refl_equal t); pattern t at -1; case t.
 
 Lemma Gt_Psucc: forall p q,
-       (p ?= Psucc q) = Gt -> (p ?= q) = Gt.
+       (p ?= Pos.succ q) = Gt -> (p ?= q) = Gt.
 intros p q H. apply Pos.lt_gt, Pos.le_succ_l.
 red. now rewrite Pos.compare_antisym, H.
 Qed.
 
 Lemma Psucc_Gt : forall p,
-       (Psucc p ?= p) = Gt.
+       (Pos.succ p ?= p) = Gt.
 intros. now apply Pos.lt_gt, Pos.lt_succ_diag_r.
 Qed.
 
@@ -47,7 +46,7 @@ match m, n with
 end. 
 
 Theorem pos_eq_refl : forall m n, pos_eq m n = true -> m = n.
-fix 1.
+fix pos_eq_refl 1.
 intros [mm|mm|] [nn|nn|];simpl;congruence ||
 (intros;apply f_equal with positive;auto).
 Defined.
@@ -68,7 +67,7 @@ left;reflexivity.
 Defined.
 
 Theorem pos_eq_dec_refl : forall m, pos_eq_dec m m = left (m<>m) (refl_equal m) .
-fix 1;intros [mm|mm|].
+fix pos_eq_dec_refl 1;intros [mm|mm|].
 simpl; rewrite  pos_eq_dec_refl; reflexivity.
 simpl; rewrite  pos_eq_dec_refl; reflexivity.
 reflexivity.
@@ -77,7 +76,7 @@ Qed.
 Theorem pos_eq_dec_ex : forall m n,
  pos_eq m n =true -> exists h:m=n,
  pos_eq_dec m n = left (m<>n) h.
-fix 1;intros [mm|mm|] [nn|nn|];try (simpl;congruence).
+fix pos_eq_dec_ex 1;intros [mm|mm|] [nn|nn|];try (simpl;congruence).
 simpl;intro e.
 elim (pos_eq_dec_ex _ _ e).
 intros x ex; rewrite ex. 
@@ -101,12 +100,12 @@ O,O => true
 end.
 
 Theorem nat_eq_refl : forall m n, nat_eq m n = true -> m = n.
-fix 1;intros [|mm] [|nn];try (simpl;congruence).
+fix nat_eq_refl 1;intros [|mm] [|nn];try (simpl;congruence).
 intros;apply f_equal with nat;auto.
 Defined.
 
 Theorem refl_nat_eq : forall n, nat_eq n n = true.
-fix 1;intros [|nn];simpl;trivial.
+fix refl_nat_eq 1;intros [|nn];simpl;trivial.
 Defined.
 
 Section with_A.
@@ -138,11 +137,11 @@ Qed.
 Fixpoint pos_length (l:list A) (p:positive) {struct l} : positive :=
 match l with
   nil => p
-| _::l' => Psucc (pos_length l' p)
+| _::l' => Pos.succ (pos_length l' p)
 end. 
 
 Lemma pos_length_app : forall (l:list A) a p, 
-pos_length (l ++ a:: nil) p = Psucc (pos_length l p).
+pos_length (l ++ a:: nil) p = Pos.succ (pos_length l p).
 induction l.
 reflexivity.
 simpl.
@@ -150,7 +149,7 @@ intros a0 p;rewrite (IHl a0 p);reflexivity.
 Qed.
 
 Lemma pos_length_Psucc : forall (l:list A) p, 
-Psucc (pos_length l p) = pos_length l (Psucc p).
+Pos.succ (pos_length l p) = pos_length l (Pos.succ p).
 induction l.
 reflexivity.
 simpl.
@@ -186,8 +185,8 @@ Qed.
 
 End with_A.
 
-Implicit Arguments Lget [A].
-Implicit Arguments pos_length [A].
+Arguments Lget [A].
+Arguments pos_length [A].
 
 Section with_AB.
 
@@ -321,7 +320,7 @@ mkStore  {index:positive;contents:Tree}.
 Definition empty := mkStore xH Tempty.
 
 Definition push a  S :=
-mkStore (Psucc (index S)) (Tadd (index S) a (contents S)).
+mkStore (Pos.succ (index S)) (Tadd (index S) a (contents S)).
 
 Definition get i S := Tget i (contents S).
 
@@ -353,7 +352,7 @@ intros a S.
 rewrite Tget_Tadd.
 rewrite Psucc_Gt.
 intro W.
-change (get (Psucc (index S)) S =PNone).
+change (get (Pos.succ (index S)) S =PNone).
 apply get_Full_Gt; auto.
 apply Psucc_Gt.
 Qed.
@@ -439,34 +438,34 @@ congruence.
 Qed.
 End Store.
 
-Implicit Arguments PNone [A].
-Implicit Arguments PSome [A].
+Arguments PNone [A].
+Arguments PSome [A].
 
-Implicit Arguments Tempty [A].
-Implicit Arguments Branch0 [A].
-Implicit Arguments Branch1 [A].
+Arguments Tempty [A].
+Arguments Branch0 [A].
+Arguments Branch1 [A].
 
-Implicit Arguments Tget [A].
-Implicit Arguments Tadd [A].
+Arguments Tget [A].
+Arguments Tadd [A].
 
-Implicit Arguments Tget_Tempty [A].
-Implicit Arguments Tget_Tadd [A].
+Arguments Tget_Tempty [A].
+Arguments Tget_Tadd [A].
 
-Implicit Arguments mkStore [A].
-Implicit Arguments index [A].
-Implicit Arguments contents [A].
+Arguments mkStore [A].
+Arguments index [A].
+Arguments contents [A].
 
-Implicit Arguments empty [A].
-Implicit Arguments get [A].
-Implicit Arguments push [A].
+Arguments empty [A].
+Arguments get [A].
+Arguments push [A].
 
-Implicit Arguments get_empty [A].
-Implicit Arguments get_push_Full [A].
+Arguments get_empty [A].
+Arguments get_push_Full [A].
 
-Implicit Arguments Full [A].
-Implicit Arguments F_empty [A].
-Implicit Arguments F_push [A].
-Implicit Arguments In [A].
+Arguments Full [A].
+Arguments F_empty [A].
+Arguments F_push [A].
+Arguments In [A].
 
 Section Store_equiv.
 Variable A:Set.
@@ -482,7 +481,7 @@ match l with
 | a :: l0 => 
   match (get idx S) with
    PNone => false
-|  PSome a' => if  a_eq a a'  then equiv l0 (Psucc idx) S else false
+|  PSome a' => if  a_eq a a'  then equiv l0 (Pos.succ idx) S else false
 end end.
 
 Inductive Equiv : list A -> forall S:Store A , Full S -> Prop := 
@@ -511,12 +510,12 @@ rewrite get_push_Full;auto.
 caseq (p ?= index S);clean.
 caseq (a_eq a a');clean.
 intros ea e ep;
-generalize (a_eq_refl _ _ ea) (Psucc_inj _ _ (pos_eq_refl _ _ ep)). 
+generalize (a_eq_refl _ _ ea) (Pos.succ_inj _ _ (pos_eq_refl _ _ ep)). 
 intros;subst;split;try apply refl_pos_eq;trivial.
 case (get p S);clean.
 intro h;case (a_eq a h);clean.
 intros e ep;
-generalize (Psucc_inj _ _ (pos_eq_refl _ _ ep)). 
+generalize (Pos.succ_inj _ _ (pos_eq_refl _ _ ep)). 
 intro;subst;rewrite Pcompare_refl in e;congruence.
 simpl;intros p b b' S F.
 rewrite (get_push_Full p b' S F).
@@ -609,12 +608,12 @@ end.
 Lemma Tget_Tmap: forall T i, 
 Tget i (Tmap T)= match Tget i T with PNone => PNone 
 | PSome a => PSome (f a) end.
-fix 1;intros [|T1 T2|a T1 T2] [ii|ii|];simpl;try congruence;auto.
+fix Tget_Tmap 1;intros [|T1 T2|a T1 T2] [ii|ii|];simpl;try congruence;auto.
 Qed.
 
 Lemma Tmap_Tadd: forall i a T,
 Tmap (Tadd i a T) = Tadd i (f a) (Tmap T).
-fix 1;intros [ii|ii|] a [|T1 T2|b T1 T2];try congruence 0;simpl;
+fix Tmap_Tadd 1;intros [ii|ii|] a [|T1 T2|b T1 T2];try congruence 0;simpl;
 (apply f_equal with (Tree B) || simpl;apply f_equal2 with (Tree B)(Tree B)|| idtac);auto;
 change (Tmap (Tadd ii a Tempty) = Tadd ii (f a) (Tmap Tempty));auto.
 Qed.
@@ -643,8 +642,8 @@ Qed.
 
 End Map.
 
-Implicit Arguments Tmap [A B].
-Implicit Arguments map [A B].
-Implicit Arguments Full_map [A B f].
+Arguments Tmap [A B].
+Arguments map [A B].
+Arguments Full_map [A B f].
 
 Notation "hyps \ A" := (push A hyps) (at level 72,left associativity).

@@ -3,8 +3,6 @@ Require Import Bool.
 Require Import Env.
 Require Import Free_algebra.
 
-Unset Boxed Definitions.
-
 Section with_env.
 
 Variable Denv: domain_env.

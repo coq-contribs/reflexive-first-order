@@ -1,8 +1,6 @@
 Require Import Bintree.
 Require Import Env.
 
-Unset Boxed Definitions.
-
 Section with_Denv.
 
 Variable Denv:domain_env.
@@ -50,7 +48,7 @@ with args_eq (ap aq:args) {struct ap} : bool :=
   end.
 
 Lemma refl_term_eq : forall t, term_eq t t =true.
-fix 1.
+fix refl_term_eq 1.
 intros [f a |i|n];simpl.
 rewrite refl_pos_eq.
 induction a;simpl;clean.
@@ -149,7 +147,7 @@ Lemma WF_checked_ground_term :
   forall vars t expected, 
   check_ground_term vars t expected = true ->
   WF_ground_term vars t expected.
-fix 2;intros hyps t expected;destruct t;simpl.
+fix WF_checked_ground_term 2;intros hyps t expected;destruct t;simpl.
 caseq (get p Sigma).
 intros FE e;destruct FE;simpl.
 caseq (pos_eq expected F_result0).
@@ -224,7 +222,7 @@ WF_args gamma rels (More_args arg a) (dom :: rge).
 Lemma WF_checked_term : forall vars rels t expected, 
 check_term vars rels t expected = true ->
 WF_term vars rels t expected.
-fix 3;intros vars rels t;destruct t;simpl.
+fix WF_checked_term 3;intros vars rels t;destruct t;simpl.
 caseq (get p Sigma).
 intros [rge dom head];intros ep expected.
 caseq (pos_eq expected dom).
@@ -276,7 +274,7 @@ Lemma WF_ground_term_term :
   forall hyps rc t dom,
   WF_ground_term hyps t dom ->
   WF_term hyps rc t dom.
-intros hyps rc;fix 1.
+intros hyps rc;fix WF_ground_term_term 1.
 intros [ f a | i | n ] dom W; inversion W;subst.
 constructor 1 with rge t;trivial.
 generalize rge H4;clear rge t H2 H4 W.
@@ -292,7 +290,7 @@ Lemma WF_term_nil_ground_term :
  forall hyps t dom,
   WF_term hyps nil t dom ->
   WF_ground_term hyps t dom.
-intros hyps; fix 1.
+intros hyps; fix WF_term_nil_ground_term 1.
 intros [ f a | i | n ] dom W; inversion W;subst.
 constructor 1 with rge t;trivial.
 generalize rge H3;clear rge t H1 H3 W.
@@ -406,7 +404,7 @@ Lemma ground_term_invar :
   WF_ground_term hyps t dom ->
   interp_term Venv rc t dom =
   interp_term Venv nil t dom .
-intros hyps Venv rc;fix 1.
+intros hyps Venv rc;fix ground_term_invar 1.
 intros [ f a | i | n ] dom W; inversion W;subst;simpl.
 rewrite H2.
 rewrite pos_eq_dec_refl.
@@ -429,7 +427,7 @@ Lemma interp_WF_ground_term_Some :
   forall t dom, 
   WF_ground_term hyps t dom ->
   (exists x, interp_term Venv nil t dom = Some x).
-intros hyps F Venv Inst. fix 1.
+intros hyps F Venv Inst. fix interp_WF_ground_term_Some 1.
 intros [ f a | i | n ] dom W; inversion W;subst;simpl.
 rewrite H2.
 rewrite pos_eq_dec_refl;simpl.
@@ -452,7 +450,7 @@ Lemma WF_term_instx : forall V (F:Full V) rels dom t expected,
 WF_term V (rels ++ dom :: nil) t expected ->
 WF_term (V \ dom) rels
   (inst_term (mkVar (index V)) (length rels) t) expected.
-fix 5.
+fix WF_term_instx 5.
 intros hyps F rc dom [ f a | i | n ] expected W;simpl inst_term;inversion W;subst.
 constructor 1 with rge t;trivial.
 generalize rge H3;clear rge t H1 H3 W.
@@ -493,7 +491,7 @@ interp_term (Venv\mkE Denv dom rel) rels
     (inst_term (mkVar (index V)) (length rels) t) expected =
 interp_term Venv (rels ++ (mkE Denv dom rel) :: nil) t expected.
 intros hyps F Venv Inst dom rel rc.
-fix 1.
+fix term_instx 1.
 intros [f a | i | n] expected W; inversion W;subst;simpl.
 rewrite H1.
 rewrite pos_eq_dec_refl.
@@ -551,7 +549,7 @@ WF_ground_term V t dom ->
 forall rels tt dd,
 WF_term V (rels ++ dom :: nil) tt dd ->
 WF_term V rels (inst_term t (length rels) tt) dd.
-intros hyps t dom Wgt rc; fix 1;intros [ f a | i | n] dd W;inversion W;
+intros hyps t dom Wgt rc; fix WF_term_inst 1;intros [ f a | i | n] dd W;inversion W;
 subst;simpl inst_term.
 constructor 1 with rge t0;trivial.
 generalize rge H3;clear W rge t0 H1 H3.
@@ -590,7 +588,7 @@ WF_term V
 (List.map (E_domain Denv) (rels ++ (mkE Denv dom x) :: nil)) tt dd -> 
 interp_term Venv (rels ++ (mkE Denv dom x) :: nil) tt dd =
 interp_term Venv rels (inst_term t (length rels) tt) dd.
-intros hyps F Venv t dom x Inst Wgt et rc;fix 1.
+intros hyps F Venv t dom x Inst Wgt et rc;fix term_inst 1.
 intros [ f a | i | n] expected W;inversion W;subst;simpl.
 rewrite H1;rewrite pos_eq_dec_refl.
 replace (interp_args Venv (rc ++ mkE Denv dom x :: nil) a rge
@@ -639,7 +637,7 @@ Lemma Weak_WF_term : forall vars dom rels t expected,
 Full vars ->
 WF_term vars rels t expected ->
 WF_term (vars\dom) rels t expected.
-fix 4.
+fix Weak_WF_term 4.
 intros hyps H rc [f a|n|i] expected F; intro W;inversion W;subst.
 constructor 1 with rge t;auto.
 generalize rge H4; clear rge H2 H4 t W.
@@ -669,7 +667,7 @@ Instanceof Denv V F Venv ->
 WF_term V (List.map (E_domain Denv) rels) t expected ->
 interp_term Venv rels t expected=
 interp_term (Venv\var)  rels t expected.
-fix 5;
+fix Weak_interp_term 5;
 intros hyps F Venv var [f a | n | i] rc expected Inst W;inversion_clear W;simpl.
 rewrite H.
 rewrite pos_eq_dec_refl.
@@ -713,7 +711,7 @@ Qed.
 Lemma Bind_WF_term: forall vars delta rels t expected,
 WF_term vars rels t expected ->
 WF_term vars (rels ++ delta) t expected.
-fix 4;intros hyps delta rc [f a| i|n] dom W;inversion W;subst;try constructor.
+fix Bind_WF_term 4;intros hyps delta rc [f a| i|n] dom W;inversion W;subst;try constructor.
 constructor 1 with rge t;trivial.
 generalize rge H3; clear rge t H1 H3 W.
 induction a;intros rge W;inversion W;subst;constructor.
@@ -736,7 +734,7 @@ Instanceof Denv V F Venv ->
 WF_term V (List.map (E_domain Denv) rels) t expected ->
 interp_term Venv rels t expected =
 interp_term Venv (rels++delta) t expected.
-intros hyps F Venv delta rc; fix 1;
+intros hyps F Venv delta rc; fix Bind_interp_term 1;
 intros [ f a | i | n ] expected Inst W;inversion W; subst;simpl.
 rewrite H1;rewrite pos_eq_dec_refl.
 replace 
@@ -797,7 +795,7 @@ rewrite_term t1 t2 occ t = Some rt ->
 WF_term vars rels t expected ->
 WF_term vars rels rt expected.
 intros hyps dom t1 t2 rc Wt1 Wt2. 
-fix 1;intros [ f a | i | n ] [ | | occa] rt expected;clean;simpl;intros e W.
+fix WF_rewrite_term 1;intros [ f a | i | n ] [ | | occa] rt expected;clean;simpl;intros e W.
 change ((if term_eq (App f a) t1 then Some t2 else None (A:=term)) =
              Some rt) in e.
 inversion_clear W;generalize e;clear e.
@@ -882,7 +880,7 @@ WF_term V (List.map (E_domain Denv) rels) t expected ->
 interp_term Venv rels t expected =
 interp_term Venv rels rt expected.
 intros ctx F Venv Inst dom t1 t2 it1 it2 Wt1 Wt2 et1 et2 eit rels
-;fix 1;intros [f a | i | n ] [ | | occa] rt expected; clean.
+;fix term_rewrite 1;intros [f a | i | n ] [ | | occa] rt expected; clean.
 intro e;simpl rewrite_term in e;congruence.
 intro e;change ((if term_eq (App f a) t1 then Some t2 else None) = Some rt) in e.
 caseq (term_eq (App f a) t1);intro e';rewrite e' in e;clean.

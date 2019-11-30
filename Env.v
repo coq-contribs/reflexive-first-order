@@ -1,7 +1,5 @@
 Require Import Bintree.
 
-Unset Boxed Definitions.
-
 Definition domain_env := Store Set.
 Definition domain := positive.
 Definition arity := list domain.

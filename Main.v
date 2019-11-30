@@ -1,5 +1,3 @@
-Unset Boxed Definitions.
-
 Require Export Bintree.
 Require Export Env.
 Require Export Free_algebra.

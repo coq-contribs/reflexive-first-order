@@ -1,8 +1,6 @@
 Require Import Bintree.
 Require Import Env.
 
-Unset Boxed Definitions.
-
 Section with_env.
 
 Definition signature (Denv:domain_env):= True.
