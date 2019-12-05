@@ -32,7 +32,7 @@ Definition rel_env:=list obj_entry.
 Notation "[ T ; i ]" := (mkE i T).
 
 Inductive Instanceof : forall V:var_ctx, Full V ->
-forall (Venv:var_env), Type :=
+forall (Venv:var_env), Set :=
   I_empty : Instanceof empty F_empty empty
 | I_var : 
   forall hyps F Venv dom var, Instanceof hyps F Venv-> 
