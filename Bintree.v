@@ -110,7 +110,7 @@ Defined.
 
 Section with_A.
 
-Variables A:Set.
+Variable A:Set.
 
 Fixpoint Lget (n:nat) (l:list A) {struct l}:option A :=
 match l with nil => None
@@ -218,6 +218,8 @@ Qed.
 End with_AB.
 
 Section Store.
+
+Set Universe Polymorphism.
 
 Variable A:Type.
 
